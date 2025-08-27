@@ -128,13 +128,41 @@ GitLab requires special network setup for Keycloak SSO:
 
 ## Troubleshooting
 
+### Critical: Permission Issues (502 Errors)
+**IMPORTANT**: GitLab Docker uses internal users with specific UIDs that must own the files:
+- `git` (UID 998) - Rails, Puma, Workhorse
+- `gitlab-psql` (UID 996) - PostgreSQL 
+- `gitlab-redis` (UID 997) - Redis
+- `gitlab-www` (UID 999) - Nginx
+
+**If GitLab returns 502 or services fail to start:**
+```bash
+# Use GitLab's built-in permission fix (ALWAYS try this first!)
+docker exec gitlab update-permissions
+docker restart gitlab
+
+# Wait for services to start (takes 1-2 minutes)
+sleep 60
+docker exec gitlab gitlab-ctl status
+```
+
+**Common symptoms of permission issues:**
+- HTTP 502 errors after ~1 minute of usage
+- Puma workers fail to start (only 1 instead of 12)
+- "Permission denied @ rb_sysopen" errors in logs
+- "dial unix .../gitlab.socket: connection refused" 
+- Redis socket connection errors
+
+**DO NOT manually change permissions** - even chmod 777 won't fix Ruby permission checks that also verify ownership.
+
 ### GitLab Won't Start
 ```bash
 # Check logs
 docker logs gitlab --tail 100
 
-# Common issue: permissions
-sudo chown -R 998:998 /home/administrator/projects/gitlab/data
+# If permission errors, use update-permissions
+docker exec gitlab update-permissions
+docker restart gitlab
 
 # Reconfigure
 docker exec -it gitlab gitlab-ctl reconfigure

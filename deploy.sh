@@ -141,8 +141,8 @@ docker run -d \
   --name gitlab \
   --hostname ${GITLAB_HOSTNAME} \
   --restart unless-stopped \
-  --memory="${GITLAB_MEMORY_LIMIT}" \
-  --cpus="${GITLAB_CPU_LIMIT}" \
+  --memory="4g" \
+  --cpus="2" \
   -p ${GITLAB_SSH_PORT}:22 \
   -v ${DATA_DIR}/config:/etc/gitlab \
   -v ${DATA_DIR}/logs:/var/log/gitlab \

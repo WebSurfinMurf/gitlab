@@ -342,6 +342,10 @@ docker exec gitlab gitlab-rake [task]
 
 ### Troubleshooting
 ```bash
+# CRITICAL: Fix permission issues (causes 502 errors)
+docker exec gitlab update-permissions
+docker restart gitlab
+
 # Check configuration
 docker exec gitlab gitlab-ctl show-config
 
@@ -354,6 +358,35 @@ docker exec gitlab gitlab-rake cache:clear
 # Database console
 docker exec -it gitlab gitlab-psql
 ```
+
+### Common Issues & Fixes
+
+#### 502 Bad Gateway Errors
+**Root Cause**: File ownership corruption preventing services from starting
+**Symptoms**: Works initially, then fails after ~1 minute
+**Fix**:
+```bash
+# ALWAYS use GitLab's built-in fix first
+docker exec gitlab update-permissions
+docker restart gitlab
+
+# Wait for services to start
+sleep 60
+docker exec gitlab gitlab-ctl status
+```
+
+#### Permission Denied Errors
+**Never manually chmod/chown** - GitLab checks both permissions AND ownership
+**Internal Users**:
+- `git` (UID 998) - Rails, Puma, Workhorse  
+- `gitlab-psql` (UID 996) - PostgreSQL
+- `gitlab-redis` (UID 997) - Redis
+- `gitlab-www` (UID 999) - Nginx
+
+#### Socket Connection Refused
+**Symptoms**: "dial unix .../gitlab.socket: connect: connection refused"
+**Cause**: Puma workers failing to start due to log permission issues
+**Fix**: Run `update-permissions` as shown above
 
 ## Environment Variables
 

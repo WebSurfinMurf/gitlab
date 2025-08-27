@@ -125,15 +125,27 @@ docker run -d \
 - Just a mounting strategy
 
 ## Current Workaround
-Since GitLab requires root internally, the only practical workaround is:
+Since GitLab requires root internally, the practical workarounds are:
 
-1. **Accept the security risk** (not recommended)
-2. **Regularly fix permissions** with:
+1. **Use GitLab's built-in permission management**:
    ```bash
-   sudo chown -R administrator:administrators /home/administrator/data/gitlab
-   sudo chown -R administrator:administrators /home/administrator/projects/gitlab
+   # GitLab provides update-permissions to fix internal ownership
+   docker exec gitlab update-permissions
+   docker restart gitlab
    ```
+   **Note:** This fixes internal container permissions, not host ownership
+
+2. **Accept the security risk** (not recommended for production)
+
 3. **Move GitLab data outside home directory** to `/opt/gitlab` or `/srv/gitlab`
+   where root ownership is more acceptable
+
+## Important Discovery
+**DO NOT manually change permissions** on GitLab files:
+- GitLab checks both file permissions AND ownership
+- Even `chmod 777` won't work if ownership is wrong
+- The `update-permissions` command properly sets internal container ownership
+- Manual chown/chmod often makes things worse
 
 ## Recommendation
 **For production use:**
