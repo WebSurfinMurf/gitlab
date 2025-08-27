@@ -148,7 +148,6 @@ docker run -d \
   -v ${DATA_DIR}/logs:/var/log/gitlab \
   -v ${DATA_DIR}/data:/var/opt/gitlab \
   -v /home/administrator/projects/backups/gitlab:/var/opt/gitlab/backups \
-  --network gitlab-net \
   --network traefik-proxy \
   --add-host keycloak.ai-servicers.com:172.22.0.3 \
   --env GITLAB_ROOT_PASSWORD="${GITLAB_ROOT_PASSWORD}" \
@@ -166,8 +165,8 @@ echo -e "${GREEN}✓ GitLab container started${NC}"
 echo ""
 
 # Connect to additional network
-echo -e "${YELLOW}Connecting to traefik-proxy network...${NC}"
-docker network connect traefik-proxy gitlab 2>/dev/null || echo "Already connected to traefik-proxy"
+echo -e "${YELLOW}Connecting to gitlab-net network...${NC}"
+docker network connect gitlab-net gitlab 2>/dev/null || echo "Already connected to gitlab-net"
 
 echo ""
 echo -e "${GREEN}=== GitLab CE Deployment Started ===${NC}"
