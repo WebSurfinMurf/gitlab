@@ -148,12 +148,12 @@ docker run -d \
   -v ${DATA_DIR}/logs:/var/log/gitlab \
   -v ${DATA_DIR}/data:/var/opt/gitlab \
   -v /home/administrator/projects/backups/gitlab:/var/opt/gitlab/backups \
-  --network traefik-proxy \
+  --network traefik-net \
   --add-host keycloak.ai-servicers.com:172.22.0.3 \
   --env GITLAB_ROOT_PASSWORD="${GITLAB_ROOT_PASSWORD}" \
   --env GITLAB_ROOT_EMAIL="${GITLAB_ROOT_EMAIL}" \
   --label "traefik.enable=true" \
-  --label "traefik.docker.network=traefik-proxy" \
+  --label "traefik.docker.network=traefik-net" \
   --label "traefik.http.routers.gitlab.rule=Host(\`${GITLAB_HOSTNAME}\`)" \
   --label "traefik.http.routers.gitlab.entrypoints=websecure" \
   --label "traefik.http.routers.gitlab.tls=true" \
