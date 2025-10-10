@@ -90,6 +90,8 @@ gitlab_rails['backup_path'] = "${GITLAB_BACKUP_PATH}"
 postgresql['shared_buffers'] = "256MB"
 postgresql['max_worker_processes'] = 4
 sidekiq['max_concurrency'] = 15
+puma['worker_processes'] = 4
+puma['per_worker_max_memory_mb'] = 1500
 prometheus_monitoring['enable'] = false
 
 # Disable services we don't need
@@ -141,8 +143,8 @@ docker run -d \
   --name gitlab \
   --hostname ${GITLAB_HOSTNAME} \
   --restart unless-stopped \
-  --memory="4g" \
-  --cpus="2" \
+  --memory="12g" \
+  --cpus="4" \
   -p ${GITLAB_SSH_PORT}:22 \
   -v ${DATA_DIR}/config:/etc/gitlab \
   -v ${DATA_DIR}/logs:/var/log/gitlab \
@@ -159,7 +161,7 @@ docker run -d \
   --label "traefik.http.routers.gitlab.tls=true" \
   --label "traefik.http.routers.gitlab.tls.certresolver=letsencrypt" \
   --label "traefik.http.services.gitlab.loadbalancer.server.port=80" \
-  gitlab/gitlab-ce:latest
+  gitlab/gitlab-ce:18.4.2-ce.0
 
 echo -e "${GREEN}✓ GitLab container started${NC}"
 echo ""
