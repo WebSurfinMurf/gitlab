@@ -35,7 +35,7 @@ chmod 700 /home/administrator/secrets
 
 ```bash
 # Create secrets/gitlab.env
-cat > /home/administrator/secrets/gitlab.env << 'EOF'
+cat > $HOME/projects/secrets/gitlab.env << 'EOF'
 # GitLab Configuration
 GITLAB_HOSTNAME=gitlab.ai-servicers.com
 GITLAB_EXTERNAL_URL=https://gitlab.ai-servicers.com
@@ -76,7 +76,7 @@ GITLAB_OIDC_ISSUER=https://keycloak.ai-servicers.com/realms/master
 GITLAB_OIDC_REDIRECT_URI=https://gitlab.ai-servicers.com/users/auth/openid_connect/callback
 EOF
 
-chmod 600 /home/administrator/secrets/gitlab.env
+chmod 600 $HOME/projects/secrets/gitlab.env
 ```
 
 ### 3. Deploy GitLab
@@ -170,7 +170,7 @@ docker exec -t gitlab gitlab-backup create
 cp -r /home/administrator/projects/data/gitlab/config /backup/gitlab-config-$(date +%Y%m%d)
 
 # Backup secrets
-cp /home/administrator/secrets/gitlab.env /backup/gitlab-env-$(date +%Y%m%d)
+cp $HOME/projects/secrets/gitlab.env /backup/gitlab-env-$(date +%Y%m%d)
 ```
 
 ### 2. Pull New Image
@@ -390,7 +390,7 @@ docker exec gitlab gitlab-ctl status
 
 ## Environment Variables
 
-All configuration is driven by environment variables in `/home/administrator/secrets/gitlab.env`:
+All configuration is driven by environment variables in `$HOME/projects/secrets/gitlab.env`:
 
 | Variable | Description | Example |
 |----------|-------------|---------|

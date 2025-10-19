@@ -11,7 +11,7 @@
 #### Diagnosis
 ```bash
 # Check if GitLab is responding internally
-curl -I http://$(docker inspect gitlab -f '{{.NetworkSettings.Networks.traefik-proxy.IPAddress}}'):80
+curl -I http://$(docker inspect gitlab -f '{{.NetworkSettings.Networks.traefik-net.IPAddress}}'):80
 
 # Check Traefik routing
 docker logs traefik | grep gitlab
@@ -28,7 +28,7 @@ docker stop gitlab && docker rm gitlab
 ./deploy.sh
 
 # Verify Traefik network
-docker network connect traefik-proxy gitlab
+docker network connect traefik-net gitlab
 ```
 
 ### 2. Keycloak SSO Login Fails

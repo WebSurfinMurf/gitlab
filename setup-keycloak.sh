@@ -115,7 +115,7 @@ echo ""
 
 # Update secrets file with the client secret
 echo -e "${YELLOW}Updating secrets file with client secret...${NC}"
-SECRETS_FILE="/home/administrator/secrets/gitlab.env"
+SECRETS_FILE="$HOME/projects/secrets/gitlab.env"
 sed -i "s/GITLAB_OIDC_CLIENT_SECRET=.*/GITLAB_OIDC_CLIENT_SECRET=$CLIENT_SECRET/" "$SECRETS_FILE"
 
 echo -e "${GREEN}✓ Configuration saved${NC}"

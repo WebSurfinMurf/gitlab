@@ -74,7 +74,7 @@ graph LR
 ### Initial Deployment
 ```bash
 cd /home/administrator/projects/gitlab
-./deploy.sh  # Sources secrets from /home/administrator/secrets/gitlab.env
+./deploy.sh  # Sources secrets from $HOME/projects/secrets/gitlab.env
 ```
 
 ### Available Scripts
@@ -193,7 +193,7 @@ docker exec -it gitlab gitlab-rails console
 ## Configuration & Secrets
 
 ### Environment Variables
-Stored in `/home/administrator/secrets/gitlab.env`:
+Stored in `$HOME/projects/secrets/gitlab.env`:
 - `GITLAB_ROOT_PASSWORD`: Root user password (complex, no common words)
 - `GITLAB_OIDC_CLIENT_SECRET`: Keycloak client secret (auto-generated)
 - `GITLAB_SMTP_PASSWORD`: SendGrid API key for email

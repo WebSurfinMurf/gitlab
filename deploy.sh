@@ -12,7 +12,7 @@ echo -e "${GREEN}=== GitLab CE Deployment ===${NC}"
 echo ""
 
 # Source environment variables
-ENV_FILE="/home/administrator/secrets/gitlab.env"
+ENV_FILE="$HOME/projects/secrets/gitlab.env"
 if [ ! -f "$ENV_FILE" ]; then
     echo -e "${RED}Error: Environment file not found at $ENV_FILE${NC}"
     exit 1

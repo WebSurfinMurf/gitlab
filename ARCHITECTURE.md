@@ -92,7 +92,7 @@ PostgreSQL            Redis Cache            Container Registry
   - UserInfo: http://keycloak:8080/... (internal)
 
 #### Traefik Reverse Proxy
-- **Network**: traefik-proxy
+- **Network**: traefik-net
 - **TLS**: Let's Encrypt certificates
 - **Routes**:
   - gitlab.ai-servicers.com → Port 80
@@ -165,7 +165,7 @@ PostgreSQL            Redis Cache            Container Registry
 ## Network Architecture
 
 ### Docker Networks
-- **traefik-proxy**: External access via Traefik
+- **traefik-net**: External access via Traefik
 - **gitlab-net**: Internal GitLab services
 
 ### Port Mappings
@@ -196,7 +196,7 @@ Required for GitLab to resolve Keycloak internally for backend OAuth calls.
 - **Protected branches**: Restrict push/merge
 
 ### Secrets Management
-- **Location**: `/home/administrator/secrets/gitlab.env`
+- **Location**: `$HOME/projects/secrets/gitlab.env`
 - **Contains**:
   - Root password
   - OAuth client secret

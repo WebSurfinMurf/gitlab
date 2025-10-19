@@ -1,7 +1,7 @@
 # GitLab CE Deployment
 
 ## Essential Scripts
-- `deploy.sh` - Main deployment script (uses secrets from /home/administrator/secrets/gitlab.env)
+- `deploy.sh` - Main deployment script (uses secrets from $HOME/projects/secrets/gitlab.env)
 - `setup-keycloak.sh` - Configure Keycloak SSO integration
 - `setup-runner.sh` - Set up GitLab CI/CD runner
 - `import-dashy.sh` - Import Dashy project with CI/CD pipeline
