@@ -151,6 +151,7 @@ docker run -d \
   -v ${DATA_DIR}/data:/var/opt/gitlab \
   -v /home/administrator/projects/backups/gitlab:/var/opt/gitlab/backups \
   --network traefik-net \
+  --ip 172.25.0.13 \
   --add-host keycloak.ai-servicers.com:172.22.0.3 \
   --env GITLAB_ROOT_PASSWORD="${GITLAB_ROOT_PASSWORD}" \
   --env GITLAB_ROOT_EMAIL="${GITLAB_ROOT_EMAIL}" \
