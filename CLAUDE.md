@@ -42,11 +42,15 @@ GitHub Mirror (backup)
 - Maintains full history
 - Can be scheduled or manual
 
-### 4. Keycloak SSO
+### 4. Keycloak SSO ✅ FIXED (2025-11-07)
 - Single sign-on with existing accounts
-- Auto-provision users
-- Group synchronization
-- No separate passwords
+- Auto-provision users on first login
+- Group claims received from Keycloak
+- Hybrid endpoint configuration:
+  - Browser endpoints: HTTPS (keycloak.ai-servicers.com:443)
+  - Backend endpoints: HTTP (keycloak:8080 via keycloak-net)
+- **Status**: ✅ Working correctly
+- **Fix Details**: See `/home/administrator/projects/gitlab/keycloak-sso-fix.md`
 
 ## Deployment Workflow Example (Dashy)
 
@@ -120,11 +124,17 @@ Auto-deploy to production →
 Mirror to GitHub for backup
 ```
 
-## Network Configuration
+## Network Configuration ✅ FIXED (2025-11-07)
 GitLab requires special network setup for Keycloak SSO:
-- Container includes `--add-host keycloak.ai-servicers.com:172.22.0.3`
-- Allows GitLab to reach Keycloak internally via HTTP while users use HTTPS
-- Mixed URL strategy in OIDC config (external for browser, internal for API)
+- **Networks**: gitlab-net (192.168.32.2), traefik-net (172.25.0.13), keycloak-net (172.19.0.2)
+- **Keycloak Access**:
+  - Direct connection via keycloak-net for backend token validation
+  - Hostname "keycloak" resolves to 172.19.0.2
+- **Hybrid URL Strategy** (CRITICAL for SSO):
+  - Browser endpoints use HTTPS: `https://keycloak.ai-servicers.com/realms/master/.../auth`
+  - Backend endpoints use HTTP: `http://keycloak:8080/realms/master/.../token`
+  - `discovery: false` in gitlab.rb (required for hybrid config)
+- **Previous Issue**: Had wrong Keycloak IP (172.22.0.3 → corrected to 172.25.0.11)
 
 ## Troubleshooting
 

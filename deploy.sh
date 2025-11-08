@@ -111,7 +111,7 @@ gitlab_rails['omniauth_allow_single_sign_on'] = ['openid_connect']
 gitlab_rails['omniauth_sync_email_from_provider'] = 'openid_connect'
 gitlab_rails['omniauth_sync_profile_from_provider'] = ['openid_connect']
 gitlab_rails['omniauth_sync_profile_attributes'] = ['name', 'email']
-gitlab_rails['omniauth_auto_sign_in_with_provider'] = 'openid_connect'
+# gitlab_rails['omniauth_auto_sign_in_with_provider'] = 'openid_connect'  # Disabled to allow standard login
 gitlab_rails['omniauth_block_auto_created_users'] = false
 gitlab_rails['omniauth_providers'] = [
   {
@@ -152,7 +152,7 @@ docker run -d \
   -v /home/administrator/projects/backups/gitlab:/var/opt/gitlab/backups \
   --network traefik-net \
   --ip 172.25.0.13 \
-  --add-host keycloak.ai-servicers.com:172.22.0.3 \
+  --add-host keycloak.ai-servicers.com:172.25.0.11 \
   --env GITLAB_ROOT_PASSWORD="${GITLAB_ROOT_PASSWORD}" \
   --env GITLAB_ROOT_EMAIL="${GITLAB_ROOT_EMAIL}" \
   --label "traefik.enable=true" \
