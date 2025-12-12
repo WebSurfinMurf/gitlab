@@ -136,6 +136,40 @@ GitLab requires special network setup for Keycloak SSO:
   - `discovery: false` in gitlab.rb (required for hybrid config)
 - **Previous Issue**: Had wrong Keycloak IP (172.22.0.3 → corrected to 172.25.0.11)
 
+## Traefik Configuration ✅ FIXED (2025-12-11)
+
+### Container Registry Routing
+GitLab exposes two services on one container, requiring explicit Traefik service linking:
+
+| Router | Host | Service | Port |
+|--------|------|---------|------|
+| `gitlab` | gitlab.ai-servicers.com | gitlab | 80 |
+| `gitlab-registry` | registry.gitlab.ai-servicers.com | gitlab-registry | 5050 |
+
+**CRITICAL**: When a container defines multiple Traefik services, each router MUST explicitly specify its service:
+```bash
+--label "traefik.http.routers.gitlab.service=gitlab"
+--label "traefik.http.routers.gitlab-registry.service=gitlab-registry"
+```
+
+Without explicit service linking, Traefik fails with:
+```
+ERR Router gitlab cannot be linked automatically with multiple Services: ["gitlab" "gitlab-registry"]
+```
+
+### Port Exposure
+- Port 5050 must be exposed for registry: `-p 5050:5050`
+- SSH on port 2222: `-p 2222:22`
+
+### Testing Registry Access
+```bash
+# Test JWT auth endpoint (should return 403, not 404)
+curl -sk https://gitlab.ai-servicers.com/jwt/auth?service=container_registry
+
+# Docker login
+docker login registry.gitlab.ai-servicers.com -u root -p '<password>'
+```
+
 ## Troubleshooting
 
 ### Critical: Permission Issues (502 Errors)

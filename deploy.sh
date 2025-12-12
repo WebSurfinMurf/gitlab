@@ -146,6 +146,7 @@ docker run -d \
   --memory="12g" \
   --cpus="4" \
   -p ${GITLAB_SSH_PORT}:22 \
+  -p 5050:5050 \
   -v ${DATA_DIR}/config:/etc/gitlab \
   -v ${DATA_DIR}/logs:/var/log/gitlab \
   -v ${DATA_DIR}/data:/var/opt/gitlab \
@@ -161,7 +162,14 @@ docker run -d \
   --label "traefik.http.routers.gitlab.entrypoints=websecure" \
   --label "traefik.http.routers.gitlab.tls=true" \
   --label "traefik.http.routers.gitlab.tls.certresolver=letsencrypt" \
+  --label "traefik.http.routers.gitlab.service=gitlab" \
   --label "traefik.http.services.gitlab.loadbalancer.server.port=80" \
+  --label "traefik.http.routers.gitlab-registry.rule=Host(\`registry.gitlab.ai-servicers.com\`)" \
+  --label "traefik.http.routers.gitlab-registry.entrypoints=websecure" \
+  --label "traefik.http.routers.gitlab-registry.tls=true" \
+  --label "traefik.http.routers.gitlab-registry.tls.certresolver=letsencrypt" \
+  --label "traefik.http.routers.gitlab-registry.service=gitlab-registry" \
+  --label "traefik.http.services.gitlab-registry.loadbalancer.server.port=5050" \
   gitlab/gitlab-ce:18.4.2-ce.0
 
 echo -e "${GREEN}✓ GitLab container started${NC}"
