@@ -20,6 +20,75 @@ GitLab Runner → Docker → Deploy to Infrastructure
 GitHub Mirror (backup)
 ```
 
+## GitLab Runners
+
+Runners are organized by user, each with their own scope:
+
+| Runner | Container | User | Scope | Tags | Status |
+|--------|-----------|------|-------|------|--------|
+| administrator | gitlab-runner-admin | administrator | administrators group | shell, linuxserver, administrator | ✅ Active |
+| websurfinmurf | gitlab-runner-dev | websurfinmurf | developer projects | shell, linuxserver, developer | 📋 Ready to deploy |
+
+### Runner Deployment
+
+**Administrator (already deployed):**
+```bash
+cd /home/administrator/projects/gitlab/runner/administrator
+./deploy.sh
+```
+
+**WebSurfinMurf (needs setup by websurfinmurf user):**
+```bash
+# websurfinmurf must run these commands from their account:
+# 1. Copy files to their home directory
+mkdir -p ~/projects/gitlab/runner/websurfinmurf
+cp /home/administrator/projects/gitlab/runner/websurfinmurf/* ~/projects/gitlab/runner/websurfinmurf/
+
+# 2. Create runner token in GitLab UI and save to secrets
+# 3. Run deploy script
+cd ~/projects/gitlab/runner/websurfinmurf
+./deploy.sh
+
+# See full instructions: /home/administrator/projects/gitlab/runner/websurfinmurf/CLAUDE.md
+```
+
+### Runner Architecture
+```
+Push to GitLab
+      ↓
+GitLab triggers pipeline (matches tags)
+      ↓
+Runner container picks up job
+      ↓
+SSH to localhost as target user
+      ↓
+Execute: cd project && git pull && ./deploy.sh
+```
+
+### Runner Configuration
+- **Location**: `gitlab/runner/{username}/`
+- **Secrets**: `$HOME/projects/secrets/gitlab-runner-{user}.env`
+- **Network**: host (uses host DNS and filesystem access)
+- **Executor**: shell (runs as gitlab-runner user inside container)
+- **SSH**: Runner SSHs to localhost as the target user to execute commands
+
+### CI/CD Example (.gitlab-ci.yml)
+```yaml
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  tags:
+    - shell
+    - linuxserver
+    - administrator  # or 'developer' for websurfinmurf
+  only:
+    - main
+  script:
+    - ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null USER@localhost "cd /path/to/project && git pull && ./deploy.sh"
+```
+
 ## Key Features Configured
 
 ### 1. Repository Management
