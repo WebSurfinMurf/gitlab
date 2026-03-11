@@ -1,0 +1,13 @@
+--- a/lib/gitlab_edition.rb
++++ b/lib/gitlab_edition.rb
+@@ -25,7 +25,9 @@
+   def self.extensions
+     if jh?
+       %w[ee jh]
+     elsif ee?
+       %w[ee]
+     else
+-      %w[]
++      %w[custom]
+     end
+   end

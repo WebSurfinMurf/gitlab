@@ -1,0 +1,12 @@
+--- a/config/application.rb
++++ b/config/application.rb
+     Gitlab.jh do
+       load_paths.call(dir: 'jh')
+     end
+
++    # Custom extensions (board scoping, etc.)
++    load_paths.call(dir: 'custom')
++
+     # Rake tasks ignore the eager loading settings, so we need to set the
+     # autoload paths explicitly
+     config.autoload_paths = config.eager_load_paths.dup
