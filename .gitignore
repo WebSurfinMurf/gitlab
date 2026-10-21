@@ -1,0 +1,15 @@
+# Runner secrets — live runner tokens and SSH keys must never be committed.
+# NOTE: runner/administrator/config/config.toml is ALREADY tracked (with live
+# tokens in history) — fixing that requires `git rm --cached` + token rotation;
+# flagged as follow-up 2026-10-21.
+runner/*/config/ssh_key
+runner/*/config/ssh_key.pub
+runner/*/config/config.toml
+runner/*/config/.runner_system_id
+runner/agents-runtime-host/config.toml
+runner/agents-runtime-host/runner-id
+runner/docker/config/
+runner/docker-admin/config/
+runner/docker-dev/config/
+runner/websurfinmurf/config/
+runner/agents-runtime-host/
