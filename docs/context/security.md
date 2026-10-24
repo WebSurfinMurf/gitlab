@@ -6,9 +6,18 @@
 - `discovery: false` required for hybrid config in gitlab.rb
 
 ## Secrets
-- `$HOME/projects/secrets/gitlab.env` — root password, OIDC secret, SMTP key
+- `$HOME/projects/secrets/gitlab.env` — root password, OIDC secret, SMTP key; `GITLAB_TOKEN_ADMIN` for API writes (ROOT token 403s on retries)
 - `$HOME/projects/secrets/gitlab-runner-{user}.env` — runner registration tokens
-- SSH keys in `runner/{user}/config/` — NOT committed to repo (gitignored)
+- [IMPLEMENTED] `.gitignore` blocks `runner/*/config/ssh_key*`, `runner/*/config/config.toml` (live glrt tokens), agents-runtime-host state
+- [OPEN] `runner/administrator/config/config.toml` is tracked with live glrt tokens; repo remote is **github.com (WebSurfinMurf/gitlab)** → tokens in offsite history. Fix = `git rm --cached` + rotate (re-register runner). SSH keys also still on disk under `runner/*/config/` — relocate to secrets pattern.
+
+## Least-Privilege Accounts (pattern, 2026-10-20)
+- Keycloak user (master realm) + GitLab identity: provider `openid_connect`, **extern_uid = username** (not UUID)
+- GitLab **External flag is load-bearing**: hides internal-visibility projects (5 exist) from the user
+- Grant scope via GitLab group membership / project **group share** (`POST /projects/:id/share`), never per-user where a group exists
+- Example: `wdylanbibb` (GitLab id 10, External) — Reporter on `claude-skills`; GitLab group `devops` (id 114) shared into `administrators/gitlab` (project 15) at Reporter
+- **CE has no OIDC group sync** → Keycloak `/devops` and GitLab `devops` are parallel registries; new member = add in BOTH
+- Keycloak master realm password policy: `length(8) + upperCase(1) + lowerCase(1) + digits(1) + specialChars(1)` — API user-create 400s are usually policy rejections
 
 ## Network Isolation
 - gitlab-net: internal GitLab services

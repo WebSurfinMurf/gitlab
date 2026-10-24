@@ -78,6 +78,13 @@
 ### glab against this instance
 - Set `GITLAB_HOST=gitlab.ai-servicers.com`; host `api_protocol` must be `https` (was `http` → blanket 404). cicd board = project id 18.
 
+### API token + job-retry traps
+- `GITLAB_ROOT_TOKEN` → 403 on pipeline/job retry; use `GITLAB_TOKEN_ADMIN` (both in gitlab.env).
+- A `pending` job is "403 Job is not retryable" — it's picked up automatically when its runner returns; only failed/canceled jobs retry.
+
+### Keycloak user-create 400s are password-policy rejections
+- Master realm enforces `length(8)+upper+lower+digit+special`; the 400 body names the failing rule one at a time. Fetch the full policy first (`GET /admin/realms/master` → `passwordPolicy`) instead of iterating.
+
 ## Cross-Project Work From This Session
 
 ### destructive-guard blocks cross-project filesystem work
